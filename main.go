@@ -1,10 +1,6 @@
 package main
 
-import (
-	"log"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/autotls"
-)
+import "github.com/gin-gonic/gin"
 
 func main() {
 	r := gin.Default()
@@ -13,5 +9,5 @@ func main() {
 				"message": "pong",
 			})
 	})
-	log.Fatal(autotls.Run(r, "api.julu666.com", "admin.julu666.com"))
+	r.Run(":9009")
 }
