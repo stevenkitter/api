@@ -15,13 +15,20 @@ type RegisterModel struct {
 }
 
 func Register(c *gin.Context) {
-	var json RegisterModel
-	db, err := sql.Open("mysql", "root:julu666@115.159.222.199:3306/julu")
+	// var json RegisterModel
+	db, err := sql.Open("mysql", "root:julu666@tcp(115.159.222.199:3306)/julu")
+	defer db.Close()
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	if err := c.ShouldBindJSON(&json); err == nil {
-		c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
-	}
+	var version string
+	db.QueryRow("SELECT VERSION()").Scan(&version)
+
+	c.JSON(http.StatusOK, gin.H{"version": version})
+
+	// if err := c.ShouldBindJSON(&json); err == nil {
+	// 	c.JSON(http.StatusOK, gin.H{"status": "you are logged in"})
+	// }
 }
 

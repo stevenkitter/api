@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"github.com/gin-gonic/gin"
 	"app/user/register"
