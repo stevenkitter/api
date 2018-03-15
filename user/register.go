@@ -16,7 +16,7 @@ type RegisterModel struct {
 
 func Register(c *gin.Context) {
 	var json RegisterModel
-	db, err := sql.Open("mysql", "root:julu666@/julu")
+	db, err := sql.Open("mysql", "root:julu666@115.159.222.199:3306/julu")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
