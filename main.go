@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 	"github.com/gin-gonic/gin"
-	"api/user/register"
+	"app/user/register"
 )
 
 func main() {
