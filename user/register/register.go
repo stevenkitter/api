@@ -16,8 +16,8 @@ type RegisterModel struct {
 }
 
 func Register(c *gin.Context) {
-	db, dbErr := sql.Open("mysql", "root:julu666@mariadb/julu")
-	// db, dbErr := sql.Open("mysql", "root:julu666@tcp(115.159.222.199:3306)/julu")
+	// db, dbErr := sql.Open("mysql", "root:julu666@mariadb/julu")
+	db, dbErr := sql.Open("mysql", "root:julu666@tcp(115.159.222.199:3306)/julu")
 	defer db.Close()
 
 	//无法连接数据库
