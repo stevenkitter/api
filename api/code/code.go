@@ -1,27 +1,30 @@
 package code
 
 import (
-	"api/user/common"
-	"api/user/xhttp"
+	"api/common"
+	"api/xhttp"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
 )
 
+//常用参数
 const (
-	sdkAppid    = "1400063858"
-	sdkAppKey   = "345fa4781613c887768ff529cc782b57"
-	tag         = 79442 //模版id
-	china       = "86"
-	randomCount = 8
+	sdkAppid    = "1400063858"                       //appid
+	sdkAppKey   = "345fa4781613c887768ff529cc782b57" //appkey
+	tag         = 79442                              //模版id
+	china       = "86"                               //电话前缀
+	randomCount = 8                                  //8位随机数
 )
 
+//电话格式
 type TelType struct {
 	Mobile     string `form:"mobile" json:"mobile" binding:"required"`
 	Nationcode string `form:"nationcode" json:"nationcode" binding:"required"`
 }
 
+//腾讯云短信api需要的参数
 type CodeParamType struct {
 	Params []string `form:"phone" json:"params" binding:"required"`
 	Sig    string   `form:"sig" json:"sig" binding:"required"`
@@ -30,6 +33,7 @@ type CodeParamType struct {
 	Tpl_id int      `form:"tpl_id" json:"tpl_id" binding:"required"`
 }
 
+//api返回格式
 type Respon struct {
 	Result int    `json:"result"`
 	Errmsg string `json:"errmsg"`

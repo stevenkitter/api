@@ -2,9 +2,10 @@
 package register
 
 import (
-	"database/sql"
+	"api/common"
+	// "database/sql"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
+	// _ "github.com/go-sql-driver/mysql"
 	"net/http"
 )
 
@@ -17,7 +18,7 @@ type RegisterModel struct {
 
 func Register(c *gin.Context) {
 	// db, dbErr := sql.Open("mysql", "root:julu666@mariadb/julu")
-	db, dbErr := sql.Open("mysql", "root:julu666@tcp(115.159.222.199:3306)/julu")
+	db, dbErr := common.Mariadb()
 	defer db.Close()
 
 	//无法连接数据库

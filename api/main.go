@@ -1,8 +1,8 @@
 package main
 
 import (
-	"api/user/code"
-	"api/user/register"
+	"api/code"
+	"api/register"
 	"github.com/gin-gonic/gin"
 	"io"
 	"os"
@@ -14,7 +14,11 @@ func main() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 
 	r := gin.Default()
-	//test
+
+	/*
+	** 短信验证码接口
+	** params: phone
+	 */
 	r.GET("/code", code.GetCode)
 
 	r.GET("/", func(c *gin.Context) {
