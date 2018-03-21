@@ -47,6 +47,15 @@ func GetCode(c *gin.Context) {
 
 	phone := c.Query("phone")
 
+	if phone == "" {
+		common.Fail(c, "缺少手机号码参数")
+		return
+	}
+
+	if !common.ValidatePhone(phone) {
+		common.Fail(c, "错误的手机号码格式")
+		return
+	}
 	ranCo := common.RandCode(randomCount) //8位随机数
 
 	url := "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=" +
@@ -66,12 +75,14 @@ func GetCode(c *gin.Context) {
 	tel.Mobile = phone
 	tel.Nationcode = china //号码格式 中国的号码
 
-	var param CodeParamType //post数据
-	param.Params = []string{sixCode()}
-	param.Sig = sig
-	param.Tel = tel
-	param.Time = timestamp
-	param.Tpl_id = tag
+	sixCo := sixCode()
+	var param = CodeParamType{
+		Params: []string{sixCo},
+		Sig:    sig,
+		Tel:    tel,
+		Time:   timestamp,
+		Tpl_id: tag,
+	} //post数据
 
 	jsonStr, err := json.Marshal(param) //json
 
@@ -91,6 +102,19 @@ func GetCode(c *gin.Context) {
 		return
 	}
 	if respond.Result == 0 {
+		//存一下redis 以后接口匹配要用
+		redis, err := common.Redis()
+		defer redis.Close()
+		if err != nil {
+			common.Fail(c, err.Error()) //链接redis失败
+			return
+		}
+		reName := phone + "code"
+		_, err = redis.Do("SET", reName, sixCo, "EX", "300")
+		if err != nil {
+			common.Fail(c, err.Error()) //保存数据失败
+			return
+		}
 		common.OK(c, "已发送到手机") //返回<->
 		return
 	} else {

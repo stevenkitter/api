@@ -3,10 +3,10 @@ package register
 
 import (
 	"api/common"
-	// "database/sql"
 	"github.com/gin-gonic/gin"
-	// _ "github.com/go-sql-driver/mysql"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 //phone code password(md5)
@@ -34,23 +34,43 @@ func Register(c *gin.Context) {
 		db.QueryRow(select_phone, json.UserPhone).Scan(&userid)
 
 		//用户不存在
-		if userid == "" {
+		if userid == "" { //userid 值没变 说明 数据库找不到
 			//验证码正确
-			if json.Code == "123" {
-				insertSql := "INSERT INTO JL_User (jl_phone, jl_password) VALUES (?, ?)"
-				re, insertErr := db.Exec(insertSql, json.UserPhone, json.Password)
+			redis, err := common.Redis()
+			defer redis.Close()
+
+			if err != nil {
+				common.Fail(c, err.Error())
+				return
+			}
+			reName := json.UserPhone + "code"
+			reCode, err := common.RedisString(redis, reName)
+
+			if err != nil && err.Error() == "redigo: nil returned" {
+				common.Fail(c, "请发送验证码")
+				return
+			}
+			if err != nil {
+				common.Fail(c, err.Error())
+				return
+			}
+
+			if json.Code == reCode {
+				insertSql := "INSERT INTO JL_User (jl_phone, jl_password, " +
+					"jl_register_time, jl_userID) VALUES (?, ?, ?, ?)"
+				t := time.Now()
+				timestamp := t.Unix()
+
+				userIDStr := strconv.FormatInt(timestamp, 10) + json.UserPhone + common.JL_APPKEY
+				userID := common.SecrectKey(userIDStr)
+				_, insertErr := db.Exec(insertSql, json.UserPhone, json.Password, timestamp, userID)
 				if insertErr != nil {
 					fail(c, insertErr.Error())
 					return
 				}
 
-				id, lastErr := re.LastInsertId()
-
-				if lastErr != nil {
-					fail(c, lastErr.Error())
-					return
-				}
-				c.JSON(http.StatusOK, gin.H{"userid": id})
+				common.OK(c, "注册成功")
+				// c.JSON(http.StatusOK, gin.H{})
 				return
 			} else {
 				fail(c, "验证码错误")
