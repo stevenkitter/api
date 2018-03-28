@@ -2,6 +2,7 @@ package xhttp
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 )
@@ -25,4 +26,16 @@ func Post(url string, jsonStr []byte) ([]byte, error) {
 		return nil, err
 	}
 	return body, nil
+}
+
+func PostStruct(url string, obj interface{}) ([]byte, error) {
+	jsonStr, err := json.Marshal(obj) //json
+
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := Post(url, jsonStr)
+
+	return body, err
 }

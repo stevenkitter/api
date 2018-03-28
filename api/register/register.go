@@ -4,7 +4,7 @@ package register
 import (
 	"api/common"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	// "net/http"
 	"strconv"
 	"time"
 )
@@ -23,7 +23,7 @@ func Register(c *gin.Context) {
 
 	//无法连接数据库
 	if dbErr != nil {
-		fail(c, dbErr.Error())
+		common.Fail(c, dbErr.Error())
 	}
 
 	var json RegisterModel
@@ -65,7 +65,7 @@ func Register(c *gin.Context) {
 				userID := common.SecrectKey(userIDStr)
 				_, insertErr := db.Exec(insertSql, json.UserPhone, json.Password, timestamp, userID)
 				if insertErr != nil {
-					fail(c, insertErr.Error())
+					common.Fail(c, insertErr.Error())
 					return
 				}
 
@@ -73,22 +73,17 @@ func Register(c *gin.Context) {
 				// c.JSON(http.StatusOK, gin.H{})
 				return
 			} else {
-				fail(c, "验证码错误")
+				common.Fail(c, "验证码错误")
 				return
 			}
 
 		} else {
-			fail(c, "用户手机号已注册过")
+			common.Fail(c, "用户手机号已注册过")
 			return
 		}
 	} else {
 		//json 失效 数据格式不对
-		fail(c, jsonErr.Error())
+		common.Fail(c, jsonErr.Error())
 		return
 	}
-}
-
-func fail(c *gin.Context, err string) {
-	c.JSON(http.StatusBadRequest, gin.H{"jl_error": err})
-	return
 }
