@@ -4,9 +4,10 @@ package login
 import (
 	"api/common"
 	"api/wx"
-	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 	// "log"
 )
 
@@ -47,7 +48,7 @@ func Login(c *gin.Context) {
 		var tokenStr = json.Phone + json.Password + wx.Content_key
 		token := common.Sha1(tokenStr)
 		h, _ := time.ParseDuration("1h")
-		token_expires_in_time := time.Now().Add(h * 2)
+		token_expires_in_time := time.Now().Add(h * 4)
 		token_expires_in_timestamp := token_expires_in_time.Unix()
 		token_expires_in := strconv.FormatInt(token_expires_in_timestamp, 10)
 		_, err = inToken.Exec(token, token_expires_in, json.Phone)

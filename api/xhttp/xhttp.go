@@ -39,3 +39,16 @@ func PostStruct(url string, obj interface{}) ([]byte, error) {
 
 	return body, err
 }
+
+func PostModel(url string, obj interface{}, response *interface{}) error {
+	body, err := PostStruct(url, obj)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(body, response) //json 转 对象
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -6,20 +6,22 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"math/rand"
 	"net/http"
 	"reflect"
 	"regexp"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
-	JL_APPKEY = "58cde7973b53b19c114f39cd9936c25c37943c6a"                    //appkey
-	RES_OK    = 0                                                             //成功状态吗
-	RES_FAIL  = -1                                                            //失败状态吗
-	REGULAR   = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$" //手机号码正则
+	JL_APPKEY  = "58cde7973b53b19c114f39cd9936c25c37943c6a"                    //appkey
+	RES_OK     = 0                                                             //成功状态吗
+	RES_FAIL   = -1                                                            //失败状态吗
+	RES_UNAUTH = -2                                                            //token失效
+	REGULAR    = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$" //手机号码正则
 )
 
 //api return
@@ -27,6 +29,10 @@ func Fail(c *gin.Context, err string) {
 	log.Printf("err is %s", err)
 	c.JSON(http.StatusBadRequest, gin.H{"msg": err, "status": "FAIL", "res": RES_FAIL})
 
+}
+func FailToken(c *gin.Context, err string) {
+	log.Printf("err is %s", err)
+	c.JSON(http.StatusBadRequest, gin.H{"msg": err, "status": "FAIL", "res": RES_UNAUTH})
 }
 
 func OK(c *gin.Context, msg string) {

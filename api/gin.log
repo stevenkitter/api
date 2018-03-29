@@ -5,34 +5,13 @@
  - using code:	gin.SetMode(gin.ReleaseMode)
 
 [GIN-debug] GET    /code                     --> api/code.GetCode (5 handlers)
+[GIN-debug] GET    /pre_auth_code            --> api/modules.RequestForPreAuthCode (5 handlers)
+[GIN-debug] GET    /userInfo                 --> api/modules.UserInfo (5 handlers)
 [GIN-debug] POST   /login                    --> api/login.Login (5 handlers)
 [GIN-debug] POST   /register                 --> api/register.Register (5 handlers)
-[GIN-debug] GET    /                         --> main.main.func1 (5 handlers)
 [GIN-debug] POST   /wx                       --> api/wx.WxHandler (5 handlers)
+[GIN-debug] GET    /                         --> main.main.func1 (5 handlers)
 [GIN-debug] Listening and serving HTTP on :9009
-[GIN] 2018/03/27 - 19:32:40 | 200 |      46.803µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 19:32:41 | 200 |  233.560036ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 19:32:51 | 200 |      27.632µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 19:32:51 | 200 |  210.530013ms |             ::1 | POST     /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 19:32:54 | 200 |  217.350644ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 19:33:51 | 200 |      27.495µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 19:33:51 | 200 |  204.353655ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 20:03:48 | 200 |      65.933µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 20:03:48 | 200 |  219.629106ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 20:08:38 | 200 |     104.905µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 20:08:38 | 200 |  325.174019ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 20:31:17 | 200 |      90.509µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 20:31:17 | 200 |  303.897201ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 20:38:01 | 200 |      80.463µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 20:38:02 | 200 |  557.038819ms |             ::1 | POST     /login
-[GIN] 2018/03/27 - 20:38:56 | 200 |     109.452µs |             ::1 | OPTIONS  /login
-ok is 登陆成功
-[GIN] 2018/03/27 - 20:38:56 | 200 |  336.501815ms |             ::1 | POST     /login
+err is 缺少手机号码参数
+err is 错误的手机号码格式
+[GIN] 2018/03/28 - 20:52:28 | 400 |  135.333307ms |             ::1 | GET      /code

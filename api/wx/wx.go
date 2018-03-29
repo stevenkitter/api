@@ -9,10 +9,11 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 import log "github.com/cihub/seelog"
 
@@ -23,6 +24,10 @@ const (
 	EncodingAESKey = "7WfXuJfsGHYqt5eSPH8Gg7B9Y115vU8dx4Z48rZbzH1"
 )
 
+/**
+ * [微信10分钟走一次这个接口，所有数据都是加密的]
+ * @type {[post请求]}
+ */
 func WxHandler(c *gin.Context) {
 	//签名
 	timestamp := c.Query("timestamp")
@@ -34,7 +39,7 @@ func WxHandler(c *gin.Context) {
 		success(c)
 		return
 	}
-
+	//验证签名
 	var encMessage EncMessage
 	if err := c.ShouldBind(&encMessage); err == nil {
 		if !checkSignature(Token, timestamp, nonce, encMessage.Encrypt, msg_signature) {
@@ -42,6 +47,7 @@ func WxHandler(c *gin.Context) {
 			success(c)
 			return
 		}
+		//解密数据到模型
 		EncodingAESKeyBase64, _ := base64.StdEncoding.DecodeString(EncodingAESKey + "=")
 		res, err := DecryptMsg(encMessage.Encrypt, EncodingAESKeyBase64, AppId)
 		if err != nil {
@@ -56,16 +62,17 @@ func WxHandler(c *gin.Context) {
 			success(c)
 			return
 		}
+		//获得票据 并存入redis
 		log.Info(receivedMessage.ComponentVerifyTicket)
-		//每10分钟存一下ticket
+
 		re_err := common.RedisSaveString("component_verify_ticket", receivedMessage.ComponentVerifyTicket)
 		if re_err != nil {
 			log.Error("err is %s", re_err.Error())
 			success(c)
 			return
 		}
-		//看看token有效没 无效就刷新
-		api_component_token, _ := api_component_token()
+		//看看token有效没 无效就刷新 刚好10分钟可以验证一下token
+		api_component_token, _ := Api_component_token()
 		log.Info(api_component_token)
 		success(c)
 	} else {
@@ -75,12 +82,20 @@ func WxHandler(c *gin.Context) {
 	}
 }
 
+/**
+ * 暴露给接口使用的
+ * @type {预授权码}
+ */
+func Get_pre_auth_code() (string, error) {
+	code, err := pre_auth_code()
+	return code, err
+}
 func success(c *gin.Context) {
 	c.String(200, "success")
 }
 
 // 获取token
-func api_component_token() (string, error) {
+func Api_component_token() (string, error) {
 	//redis查询
 	component_access_token, err := common.RedisGETString("component_access_token")
 	if component_access_token == "" { //过期了实效了
@@ -94,8 +109,8 @@ func api_component_token() (string, error) {
 
 func request_api_component_token() (string, error) {
 	ticket, err := common.RedisGETString("component_verify_ticket")
-	if err != nil {
-		return "", err
+	if ticket != "" {
+		return ticket, err
 	}
 	request := ApiComponentTokenRequest{AppId, AppSecrect, ticket}
 	url := "https://api.weixin.qq.com/cgi-bin/component/api_component_token"
@@ -142,7 +157,7 @@ func pre_auth_code() (string, error) {
 func request_pre_auth_code() (string, error) {
 	post := map[string]interface{}{"component_appid": AppId}
 	thisJson, _ := common.MapToJson(post)
-	token, err := api_component_token()
+	token, err := Api_component_token()
 	if err != nil {
 		log.Error("token err %s", err.Error())
 		return "", err
