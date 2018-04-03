@@ -1,13 +1,2 @@
-[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
-
-[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
- - using env:	export GIN_MODE=release
- - using code:	gin.SetMode(gin.ReleaseMode)
-
-[GIN-debug] GET    /v1/code                  --> github.com/stevenkitter/api/v1.GetCode (5 handlers)
-[GIN-debug] POST   /v1/login                 --> github.com/stevenkitter/api/v1.Login (5 handlers)
-[GIN-debug] POST   /v1/register              --> github.com/stevenkitter/api/v1.Register (5 handlers)
-[GIN-debug] GET    /v1/                      --> main.v1Setup.func1 (5 handlers)
-[GIN-debug] GET    /ws                       --> main.main.func1 (5 handlers)
-[GIN-debug] GET    /socket                   --> main.main.func2 (5 handlers)
-[GIN-debug] Listening and serving HTTP on :7070
+err is 头部签名匹配错误，参数不对
+[GIN] 2018/04/03 - 14:23:44 | 400 |  159.920394ms |             ::1 | GET      /v1/

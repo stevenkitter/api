@@ -7,15 +7,17 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
 	"github.com/stevenkitter/api/v1"
 	"github.com/stevenkitter/api/v1/common"
 	"github.com/stevenkitter/api/v1/websocket"
-	"github.com/gin-gonic/gin"
 )
 
 const (
-	// Mode = gin.ReleaseMode
-	Mode = gin.DebugMode
+	//Mode 开发模式
+	Mode = gin.ReleaseMode
+	// Mode = gin.DebugMode
 )
 
 func main() {
