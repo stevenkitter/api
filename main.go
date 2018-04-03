@@ -27,7 +27,7 @@ func main() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 	log.SetOutput(gin.DefaultWriter)
 	r := gin.Default()
-	r.LoadHTMLFiles("index.tmpl")
+	r.LoadHTMLFiles("./static/index.tmpl")
 
 	r.Use(CORSMiddleware())
 	r.Use(Secure())
