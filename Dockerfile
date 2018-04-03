@@ -8,5 +8,5 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /go/src/github.com/stevenkitter/api/app .
-COPY --from=builder /go/src/github.com/stevenkitter/api/static .
+COPY --from=builder /go/src/github.com/stevenkitter/api/index.tmpl .
 CMD ["./app"]
